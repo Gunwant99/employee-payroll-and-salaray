@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-end mb-8 border-b pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800">Welcome, {{ name }}</h1>
+            <p class="text-slate-500 mt-1">Employee Self-Service Portal</p>
+        </div>
+        <div class="flex gap-4">
+            <a href="/request_leave" class="bg-indigo-600 text-white px-5 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors shadow-sm">
+                <i class="fa-solid fa-calendar-plus mr-2"></i> Request Leave
+            </a>
+            <a href="/settings" class="bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold hover:bg-slate-50 transition-colors shadow-sm">
+                <i class="fa-solid fa-gear"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-10">
+        <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center">
+            <h3 class="font-bold text-slate-700"><i class="fa-solid fa-envelope-open-text text-indigo-500 mr-2"></i> My Leave Status</h3>
+        </div>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="text-slate-500 text-xs uppercase bg-white border-b">
+                    <th class="p-4 font-bold">Requested Dates</th>
+                    <th class="p-4 font-bold">Type</th>
+                    <th class="p-4 font-bold">Admin Status</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for l in leaves %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-4 text-sm font-medium text-slate-700">{{ l['start_date'] }} to {{ l['end_date'] }}</td>
+                    <td class="p-4 text-sm text-slate-600">{{ l['leave_type'] }}</td>
+                    <td class="p-4">
+                        {% if l['status'] == 'Approved' %}
+                            <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-200">
+                                <i class="fa-solid fa-check mr-1"></i> Approved
+                            </span>
+                        {% elif l['status'] == 'Rejected' %}
+                            <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold border border-red-200">
+                                <i class="fa-solid fa-xmark mr-1"></i> Rejected
+                            </span>
+                        {% else %}
+                            <span class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-bold border border-amber-200">
+                                <i class="fa-solid fa-clock mr-1"></i> Pending
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="p-8 text-center text-slate-400">
+                        <i class="fa-solid fa-mug-hot text-3xl mb-2 text-slate-200"></i>
+                        <p>No leave requests filed yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-slate-50 p-4 border-b border-slate-200">
+            <h3 class="font-bold text-slate-700"><i class="fa-solid fa-file-invoice-dollar text-emerald-500 mr-2"></i> Salary Slips</h3>
+        </div>
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="text-slate-500 text-xs uppercase bg-white border-b">
+                    <th class="p-4 font-bold">Month</th>
+                    <th class="p-4 font-bold">Basic Pay</th>
+                    <th class="p-4 font-bold">Net Salary</th>
+                    <th class="p-4 font-bold text-right">Action</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                {% for p in payslips %}
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="p-4 font-bold text-slate-800">{{ p['payroll_month'] }}</td>
+                    <td class="p-4 text-slate-600">₹ {{ "{:,.2f}".format(p['basic_pay']) }}</td>
+                    <td class="p-4 font-bold text-emerald-600">₹ {{ "{:,.2f}".format(p['net_salary']) }}</td>
+                    <td class="p-4 text-right">
+                        <a href="/salary_slip/{{ p['employee_id'] }}" class="text-indigo-600 hover:text-indigo-800 font-bold text-sm hover:underline">
+                            Download PDF <i class="fa-solid fa-download ml-1"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="p-8 text-center text-slate-400">
+                        <p>No payroll records generated yet.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

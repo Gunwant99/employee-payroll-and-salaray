@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-800">Leave Approvals</h1>
+    <p class="text-slate-500 mt-1">Review and manage employee time-off requests.</p>
+</div>
+
+<div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="bg-slate-50 text-slate-500 text-sm uppercase tracking-wider">
+                <th class="p-4 font-medium">Employee</th>
+                <th class="p-4 font-medium">Leave Dates</th>
+                <th class="p-4 font-medium">Type & Reason</th>
+                <th class="p-4 font-medium">Status</th>
+                <th class="p-4 font-medium text-right">Action</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200 text-slate-700">
+            {% for l in leaves %}
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="p-4 font-bold text-slate-800">{{ l['name'] }}</td>
+                <td class="p-4 text-sm">{{ l['start_date'] }} to {{ l['end_date'] }}</td>
+                <td class="p-4">
+                    <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs font-bold">{{ l['leave_type'] }}</span>
+                    <p class="text-xs text-slate-500 mt-1">{{ l['reason'] }}</p>
+                </td>
+                <td class="p-4">
+                    {% if l['status'] == 'Approved' %}
+                        <span class="text-emerald-600 font-bold"><i class="fa-solid fa-check-circle"></i> Approved</span>
+                    {% elif l['status'] == 'Rejected' %}
+                        <span class="text-red-600 font-bold"><i class="fa-solid fa-times-circle"></i> Rejected</span>
+                    {% else %}
+                        <span class="text-amber-500 font-bold"><i class="fa-solid fa-clock"></i> Pending</span>
+                    {% endif %}
+                </td>
+                <td class="p-4 text-right">
+                    {% if l['status'] == 'Pending' %}
+                    <form method="POST" class="inline-flex gap-2">
+                        <input type="hidden" name="leave_id" value="{{ l['leave_id'] }}">
+                        <button type="submit" name="status" value="Approved" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1 rounded font-bold text-sm transition-colors">Approve</button>
+                        <button type="submit" name="status" value="Rejected" class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded font-bold text-sm transition-colors">Reject</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

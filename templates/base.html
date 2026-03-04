@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartHR - Payroll System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .active-link { background-color: #f1f5f9; color: #4f46e5 !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden">
+    <nav class="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shadow-sm">
+        <div>
+            <div class="p-6 flex items-center gap-3 text-indigo-600">
+                <i class="fa-solid fa-layer-group text-2xl"></i>
+                <h2 class="text-2xl font-bold">SmartHR</h2>
+            </div>
+            <ul class="flex flex-col gap-1 px-4 mt-4">
+                <li><a href="/dashboard" class="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium"><i class="fa-solid fa-chart-pie w-5"></i> Dashboard</a></li>
+                <li><a href="/add_employee" class="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium"><i class="fa-solid fa-user-plus w-5"></i> Add Employee</a></li>
+                <li><a href="/employees" class="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium"><i class="fa-solid fa-users w-5"></i> Directory</a></li>
+                <li><a href="/attendance" class="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium"><i class="fa-solid fa-calendar-check w-5"></i> Attendance</a></li>
+                <li><a href="/payroll" class="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium"><i class="fa-solid fa-indian-rupee-sign w-5"></i> Payroll</a></li>
+                <li><a href="/manage_leaves" class="flex items-center gap-3 p-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-indigo-600 transition-colors font-medium"><i class="fa-solid fa-envelope-open-text w-5"></i> Leave Requests</a></li>
+            </ul>
+        </div>
+        <div class="p-4 border-t border-slate-200">
+            <a href="/logout" class="flex items-center gap-3 p-3 rounded-lg text-red-500 hover:bg-red-50 transition-colors font-bold"><i class="fa-solid fa-right-from-bracket w-5"></i> Logout</a>
+        </div>
+    </nav>
+    <main class="flex-1 p-10 overflow-y-auto">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
