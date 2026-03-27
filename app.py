@@ -10,7 +10,7 @@ app.secret_key = "enterprise_secret_123"
 DB_HOST = "localhost"
 DB_NAME = "smart_hr_db"
 DB_USER = "postgres"
-DB_PASS = "gunwant" # <--- UPDATE THIS
+DB_PASS = "gunwant" # <--- UPDATE THIS IF NEEDED
 
 def get_db():
     return psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS)
@@ -92,6 +92,17 @@ def employees():
     data = cur.fetchall(); cur.close(); conn.close()
     return render_template("employees.html", data=data)
 
+@app.route('/delete_employee/<int:id>', methods=['POST'])
+def delete_employee(id):
+    if session.get('role') != 'admin': return redirect('/')
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM Employee WHERE employee_id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect('/employees')
+
 @app.route('/attendance', methods=['GET', 'POST'])
 def attendance():
     if session.get('role') != 'admin': return redirect('/')
@@ -132,6 +143,17 @@ def manage_leaves():
     leaves = cur.fetchall(); cur.close(); conn.close()
     return render_template("manage_leaves.html", leaves=leaves)
 
+@app.route('/delete_leave/<int:id>', methods=['POST'])
+def delete_leave(id):
+    if session.get('role') != 'admin': return redirect('/')
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM Leave_Requests WHERE leave_id=%s", (id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect('/manage_leaves')
+
 # ---------- EMPLOYEE: PORTAL, LEAVE, SETTINGS ----------
 @app.route('/employee_dashboard')
 def employee_dashboard():
@@ -142,18 +164,15 @@ def employee_dashboard():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
     
-    # Fetch Payslips
     cur.execute("SELECT * FROM Payroll WHERE employee_id=%s ORDER BY payroll_id DESC", (emp_id,))
     payslips = cur.fetchall()
     
-    # Fetch Leave Requests for the UI
     cur.execute("SELECT * FROM Leave_Requests WHERE employee_id=%s ORDER BY leave_id DESC", (emp_id,))
     leaves = cur.fetchall()
     
-    cur.close()
-    conn.close()
-    
+    cur.close(); conn.close()
     return render_template("employee_dashboard.html", payslips=payslips, leaves=leaves, name=session['name'])
+
 @app.route('/request_leave', methods=['GET', 'POST'])
 def request_leave():
     if session.get('role') != 'employee': return redirect('/')
@@ -179,13 +198,15 @@ def settings():
 
 @app.route('/salary_slip/<int:id>')
 def salary_slip(id):
-    conn = get_db(); cur = conn.cursor(); cur.execute("SELECT e.name, p.payroll_month, p.net_salary FROM Employee e JOIN Payroll p ON e.employee_id = p.employee_id WHERE e.employee_id=%s ORDER BY p.payroll_id DESC LIMIT 1", (id,))
+    conn = get_db(); cur = conn.cursor()
+    cur.execute("SELECT e.name, p.payroll_month, p.net_salary FROM Employee e JOIN Payroll p ON e.employee_id = p.employee_id WHERE e.employee_id=%s ORDER BY p.payroll_id DESC LIMIT 1", (id,))
     data = cur.fetchone(); cur.close(); conn.close()
     return render_template("salary_slip.html", data=data)
 
 @app.route('/logout')
 def logout():
-    session.clear(); return redirect('/')
+    session.clear()
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -2,7 +2,7 @@
 {% block content %}
 <div class="mb-8">
     <h1 class="text-3xl font-bold text-slate-800">Leave Approvals</h1>
-    <p class="text-slate-500 mt-1">Review and manage employee time-off requests.</p>
+    <p class="text-slate-500 mt-1">Review, manage, and delete employee time-off requests.</p>
 </div>
 
 <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
@@ -35,13 +35,21 @@
                     {% endif %}
                 </td>
                 <td class="p-4 text-right">
-                    {% if l['status'] == 'Pending' %}
-                    <form method="POST" class="inline-flex gap-2">
-                        <input type="hidden" name="leave_id" value="{{ l['leave_id'] }}">
-                        <button type="submit" name="status" value="Approved" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1 rounded font-bold text-sm transition-colors">Approve</button>
-                        <button type="submit" name="status" value="Rejected" class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded font-bold text-sm transition-colors">Reject</button>
-                    </form>
-                    {% endif %}
+                    <div class="flex items-center justify-end gap-2">
+                        {% if l['status'] == 'Pending' %}
+                        <form method="POST" class="inline-flex gap-2">
+                            <input type="hidden" name="leave_id" value="{{ l['leave_id'] }}">
+                            <button type="submit" name="status" value="Approved" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-3 py-1 rounded font-bold text-sm transition-colors">Approve</button>
+                            <button type="submit" name="status" value="Rejected" class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1 rounded font-bold text-sm transition-colors">Reject</button>
+                        </form>
+                        {% endif %}
+                        
+                        <form action="/delete_leave/{{ l['leave_id'] }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this leave request?');">
+                            <button type="submit" class="bg-slate-100 text-slate-500 hover:bg-red-100 hover:text-red-600 px-3 py-1 rounded font-bold text-sm transition-colors" title="Delete Leave Request">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

@@ -18,6 +18,7 @@
                 <th class="p-4 font-medium">Name & Contact</th>
                 <th class="p-4 font-medium">Role</th>
                 <th class="p-4 font-medium">Base Salary</th>
+                <th class="p-4 font-medium text-right">Actions</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-slate-200 text-slate-700">
@@ -33,6 +34,13 @@
                     <p class="text-sm mt-1">{{e[3]}}</p>
                 </td>
                 <td class="p-4 font-medium text-emerald-600">₹ {{ "{:,.2f}".format(e[6]) }}</td>
+                <td class="p-4 text-right">
+                    <form action="/delete_employee/{{ e[0] }}" method="POST" onsubmit="return confirm('Are you sure? This will delete all their payroll and attendance data too.');">
+                        <button type="submit" class="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 px-3 py-1.5 rounded-lg text-sm font-bold transition-colors">
+                            <i class="fa-solid fa-trash mr-1"></i> Delete
+                        </button>
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
